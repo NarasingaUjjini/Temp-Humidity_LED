@@ -1,0 +1,82 @@
+#include <dht.h>
+
+
+#define data_pin 2
+dht DHT;
+
+#define green_neg 13
+#define green_pos 12
+#define red_neg 10
+#define red_pos 9
+#define rg_neg 7
+#define rg_pos 6
+#define white_neg 4
+#define white_pos 3
+
+//greenLED = temp is too high
+//redLED = temp is too low
+//rgLED = humidity is too high
+//white = humidity is too low
+
+
+void setup() {
+  
+  Serial.begin(9600);
+  pinMode (green_neg, OUTPUT);
+  pinMode (green_pos, OUTPUT);
+  pinMode (red_neg, OUTPUT);
+  pinMode (red_pos, OUTPUT);
+  pinMode (rg_neg, OUTPUT);
+  pinMode (rg_pos, OUTPUT);
+  pinMode (white_neg, OUTPUT);
+  pinMode (white_pos, OUTPUT);
+
+}
+
+void loop() {
+  
+  digitalWrite (green_neg, LOW);
+  digitalWrite (green_pos, LOW);
+  digitalWrite (red_neg, LOW);
+  digitalWrite (red_pos, LOW);
+  digitalWrite (rg_neg, LOW);
+  digitalWrite (rg_pos, LOW);
+  digitalWrite (white_neg, LOW);
+  digitalWrite (white_pos, LOW);
+
+  float readData = DHT.read22(data_pin);
+
+  float temp = DHT.temperature;
+  float humid = DHT.humidity;
+
+  
+  
+
+  float degrees_f = (temp*(1.8))+32;
+
+  if (temp > 20) {
+    digitalWrite (green_pos, HIGH);
+    digitalWrite (red_pos, HIGH);
+    digitalWrite (rg_pos, HIGH);
+    digitalWrite (white_pos, HIGH);
+  } else {
+    digitalWrite (green_pos, LOW);
+    digitalWrite (red_pos, LOW);
+    digitalWrite (rg_pos, LOW);
+    digitalWrite (white_pos, LOW); 
+  }
+
+  Serial.print("Temperature = ");
+  Serial.print(temp);
+  Serial.print("°C, ");
+  Serial.print(degrees_f);
+  Serial.print("°F");
+  Serial.println();
+  Serial.print("Humidity = ");
+  Serial.print(humid);
+  Serial.print("%");
+  Serial.println();
+
+  delay(2000);
+
+}
